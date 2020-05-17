@@ -46,6 +46,8 @@ Twilio allows you to create a Saas product on top of their API in many ways. Thi
 
 <a name="init"/>
 
+## initializing the twilio client
+
 Create an instance of the client
 
 ```ruby
@@ -71,7 +73,14 @@ token = subaccount.auth_token
 In this example, we are listing phone numbers for Canada, in the region of Ontario and numbers that start with 289. 
 
 ```ruby
-numbers = Sasswillio.list_sms_enabled_phone_numbers_for(@client, {country_code: 'CA', region: 'ON', contains: '289'})
+numbers = Sasswillio.list_sms_enabled_phone_numbers_for(
+  @client, 
+  {
+    country_code: 'CA', 
+    region: 'ON', 
+    contains: '289'
+  }
+)
 p numbers
 [{:number=>"+16473711080", :capabilities=>{:voice=>true, :SMS=>true, :MMS=>true, :fax=>true}}, {:number=>"+16473711150", :capabilities=>{:voice=>true, :SMS=>true, :MMS=>true, :fax=>true}}, {:number=>"+16473711025", :capabilities=>{:voice=>true, :SMS=>true, :MMS=>true, :fax=>true}}]
 ```
@@ -87,7 +96,15 @@ p pricing
 To buy a specific phone number for the subscriber, we pass the root account, the subaccount sid and the desired phone number along with the callback URL for when that number recieves a message. You can also specify an sms_status_path which twilio will use to send webhooks regarding the message status (sent, delivered etc).
 
 ```ruby
-phone_number = Sasswillio.provision_sms_number_for_subaccount(@client, subaccount_sid, {phone_number: '+1xxxxxxxxxx', sms_path: 'https://foo.bar', sms_status_path: 'https://foo.baz'})
+phone_number = Sasswillio.provision_sms_number_for_subaccount(
+  @client, 
+  subaccount_sid, 
+  {
+    phone_number: '+1xxxxxxxxxx', 
+    sms_path: 'https://foo.bar', 
+    sms_status_path: 'https://foo.baz'
+  }
+)
 ```
 
 <a name="usage"/>
@@ -97,7 +114,14 @@ phone_number = Sasswillio.provision_sms_number_for_subaccount(@client, subaccoun
 To view usage, specify the subaccount sid and its token and a date range.
 
 ```ruby
-usage = Sasswillio.get_subaccount_usage(subaccount_sid, subaccount_token, {start_date: (Time.now - 1.day).to_date, end_date: (Time.now).to_date})
+usage = Sasswillio.get_subaccount_usage(
+  subaccount_sid, 
+  subaccount_token, 
+  {
+    start_date: (Time.now - 1.day).to_date, 
+    end_date: (Time.now).to_date
+  }
+)
 usage.each{|u| p u.price}
 ```
 
