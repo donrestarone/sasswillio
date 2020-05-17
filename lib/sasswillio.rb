@@ -10,10 +10,10 @@ require 'twilio-ruby'
 module Sasswillio
 
   def self.get_credentials
-    if ENV['FORTHSPACE_TWILIO_ACCOUNT_SID'] && ENV['FORTHSPACE_TWILIO_ACCOUNT_AUTH_TOKEN']
+    if ENV['TWILIO_ACCOUNT_SID'] && ENV['TWILIO_ACCOUNT_AUTH_TOKEN']
       return {
-        sid: ENV['FORTHSPACE_TWILIO_ACCOUNT_SID'],
-        token: ENV['FORTHSPACE_TWILIO_ACCOUNT_AUTH_TOKEN']
+        sid: ENV['TWILIO_ACCOUNT_SID'],
+        token: ENV['TWILIO_ACCOUNT_AUTH_TOKEN']
       }
     else
       return {
