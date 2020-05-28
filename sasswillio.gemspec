@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'sasswillio'
-  s.version     = '1.0.0'
+  s.version     = '1.0.1'
   s.date        = '2020-05-17'
   s.summary     = "a thin twillio API wrapper"
   s.description = "a simple ruby gem that wraps around the twilio API allowing you to build an SMS enabled SaaS product more erganomically."
