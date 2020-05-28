@@ -85,7 +85,7 @@ module Sasswillio
         in_region: options[:region],
         contains: "#{options[:contains]}*******"
       )
-      return numbers.map{|n| {number: n.phone_number, capabilities: {**n.capabilities.transform_keys(&:to_sym)}}}
+      return numbers.map{|n| {number: n.phone_number, capabilities: {**n.capabilities.transform_keys(&:to_sym), friendly_name: n.friendly_name}}}
     rescue Twilio::REST::TwilioError => e
       return {
         error: true,
