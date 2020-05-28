@@ -6,6 +6,8 @@ require 'twilio-ruby'
 # sms_pricing = Sasswillio.get_sms_pricing_for(@client)
 # phone_number_pricing = Sasswillio.get_phone_number_pricing_for(@client)
 # subaccount = Sasswillio.create_subaccount(@client, '423')
+# sms_pricing = Sasswillio.get_sms_pricing_for(@client, 'FR')
+# country_nums = Sasswillio.list_sms_enabled_phone_numbers_for_country(@client, {country_code: 'GB'})
 
 module Sasswillio
 
@@ -38,7 +40,7 @@ module Sasswillio
 
   def self.get_sms_pricing_for(twilio_client, country = 'CA')
     begin
-      return twilio_client.pricing.v1.messaging.countries(country).fetch
+      return Formatter.aggregate_sms_prices_obj(twilio_client.pricing.v1.messaging.countries(country).fetch)
     rescue Twilio::REST::TwilioError => e
       return {
         error: true,
@@ -91,6 +93,29 @@ module Sasswillio
         error: true,
         errors: [e.message],
         context: 'list sms enable phone numbers'
+      }
+    end
+  end
+
+  def self.list_sms_enabled_phone_numbers_for_country(twilio_client, options = {country_code: 'CA'})
+    numbers = Hash.new
+    begin
+      numbers[:local] = twilio_client.available_phone_numbers(options[:country_code]).local.list(
+        sms_enabled: true,
+      )
+      numbers[:mobile] = twilio_client.available_phone_numbers(options[:country_code]).mobile.list(
+        sms_enabled: true,
+      )
+
+      transformed = Hash.new
+      transformed[:local_numbers] = numbers[:local].map{|n| {number: n.phone_number, capabilities: {**n.capabilities.transform_keys(&:to_sym), friendly_name: n.friendly_name}}}
+      transformed[:mobile_numbers] = numbers[:mobile].map{|n| {number: n.phone_number, capabilities: {**n.capabilities.transform_keys(&:to_sym), friendly_name: n.friendly_name}}}
+      return transformed
+    rescue Twilio::REST::TwilioError => e
+      return {
+        error: true,
+        errors: [e.message],
+        context: 'list sms enable phone numbers for country'
       }
     end
   end
@@ -194,3 +219,5 @@ module Sasswillio
     end
   end
 end
+
+require 'sasswillio/formatter'

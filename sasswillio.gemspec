@@ -1,12 +1,12 @@
 Gem::Specification.new do |s|
   s.name        = 'sasswillio'
-  s.version     = '1.0.1'
+  s.version     = '1.0.2'
   s.date        = '2020-05-17'
   s.summary     = "a thin twillio API wrapper"
   s.description = "a simple ruby gem that wraps around the twilio API allowing you to build an SMS enabled SaaS product more erganomically."
   s.authors     = ["Shashike J"]
   s.email       = 'shashikejayatunge@gmail.com'
-  s.files       = ["lib/sasswillio.rb"]
+  s.files       = ["lib/sasswillio.rb", "lib/sasswillio/formatter.rb"]
   s.homepage    =
     'https://github.com/donrestarone/sasswillio'
   s.license       = 'MIT'
