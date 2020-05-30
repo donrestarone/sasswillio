@@ -87,7 +87,7 @@ module Sasswillio
         in_region: options[:region],
         contains: "#{options[:contains]}*******"
       )
-      return numbers.map{|n| {number: n.phone_number, capabilities: {**n.capabilities.transform_keys(&:to_sym), friendly_name: n.friendly_name}}}
+      return numbers.map{|n| {number: n.phone_number, friendly_name: n.friendly_name, capabilities: {**n.capabilities.transform_keys(&:to_sym)}}}
     rescue Twilio::REST::TwilioError => e
       return {
         error: true,
@@ -108,8 +108,8 @@ module Sasswillio
       )
 
       transformed = Hash.new
-      transformed[:local_numbers] = numbers[:local].map{|n| {number: n.phone_number, capabilities: {**n.capabilities.transform_keys(&:to_sym), friendly_name: n.friendly_name}}}
-      transformed[:mobile_numbers] = numbers[:mobile].map{|n| {number: n.phone_number, capabilities: {**n.capabilities.transform_keys(&:to_sym), friendly_name: n.friendly_name}}}
+      transformed[:local_numbers] = numbers[:local].map{|n| {number: n.phone_number, friendly_name: n.friendly_name, capabilities: {**n.capabilities.transform_keys(&:to_sym)}}}
+      transformed[:mobile_numbers] = numbers[:mobile].map{|n| {number: n.phone_number, friendly_name: n.friendly_name, capabilities: {**n.capabilities.transform_keys(&:to_sym)}}}
       return transformed
     rescue Twilio::REST::TwilioError => e
       return {
