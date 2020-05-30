@@ -1,7 +1,3 @@
-
-# remove
-require 'pry'
-
 module Formatter
   def self.aggregate_sms_prices_obj(twilio_sms_pricing_res)
     local_price_inbound = twilio_sms_pricing_res.inbound_sms_prices.find{|n| n["number_type"] == 'local'}
