@@ -114,10 +114,10 @@ module Sasswillio
     rescue Twilio::REST::TwilioError => e
       numbers[:mobile] = []
     end
-      transformed = Hash.new
-      transformed[:local_numbers] = numbers[:local].map{|n| {number: n.phone_number, friendly_name: n.friendly_name, capabilities: {**n.capabilities.transform_keys(&:to_sym)}}}
-      transformed[:mobile_numbers] = numbers[:mobile].map{|n| {number: n.phone_number, friendly_name: n.friendly_name, capabilities: {**n.capabilities.transform_keys(&:to_sym)}}}
-      return transformed
+    transformed = Hash.new
+    transformed[:local_numbers] = numbers[:local].map{|n| {number: n.phone_number, friendly_name: n.friendly_name, capabilities: {**n.capabilities.transform_keys(&:to_sym)}}}
+    transformed[:mobile_numbers] = numbers[:mobile].map{|n| {number: n.phone_number, friendly_name: n.friendly_name, capabilities: {**n.capabilities.transform_keys(&:to_sym)}}}
+    return transformed
   end
 
   def self.create_subaccount(twilio_client, options)
