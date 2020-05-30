@@ -31,7 +31,7 @@ a simple ruby gem that wraps around the twilio API allowing you to build an SMS 
   In gemfile (ex; rack applications like Rails, Sinatra) 
 
   ```ruby
-  gem 'sasswillio', '~> 1.02'
+  gem 'sasswillio', '~> 1.0.2'
   ```
   Install globally
 
