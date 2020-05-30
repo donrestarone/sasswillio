@@ -103,21 +103,21 @@ module Sasswillio
       numbers[:local] = twilio_client.available_phone_numbers(options[:country_code]).local.list(
         sms_enabled: true,
       )
+    rescue Twilio::REST::TwilioError => e
+      numbers[:local] = []
+    end
+
+    begin
       numbers[:mobile] = twilio_client.available_phone_numbers(options[:country_code]).mobile.list(
         sms_enabled: true,
       )
-
+    rescue Twilio::REST::TwilioError => e
+      numbers[:mobile] = []
+    end
       transformed = Hash.new
       transformed[:local_numbers] = numbers[:local].map{|n| {number: n.phone_number, friendly_name: n.friendly_name, capabilities: {**n.capabilities.transform_keys(&:to_sym)}}}
       transformed[:mobile_numbers] = numbers[:mobile].map{|n| {number: n.phone_number, friendly_name: n.friendly_name, capabilities: {**n.capabilities.transform_keys(&:to_sym)}}}
       return transformed
-    rescue Twilio::REST::TwilioError => e
-      return {
-        error: true,
-        errors: [e.message],
-        context: 'list sms enable phone numbers for country'
-      }
-    end
   end
 
   def self.create_subaccount(twilio_client, options)
