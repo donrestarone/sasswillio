@@ -76,7 +76,8 @@ a simple ruby gem that wraps around the twilio API allowing you to build an SMS 
 <a name="numberMonthlyCost"/>
 
 ## fetching monthly cost of phone number
-
+  Check out the cost calculation methods in action in a React Application
+  ![Demo of Sasswillio powered React Client](https://media.giphy.com/media/gI0IAguX3j6VyluqXO/giphy.gif)
   The rental cost for a number depends on the country.
 
   ```ruby
