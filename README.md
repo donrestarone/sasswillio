@@ -14,6 +14,8 @@ a simple ruby gem that wraps around the twilio API allowing you to build an SMS 
   [fetching monthly cost of phone number](#numberMonthlyCost)
   
   [fetching SMS costs](#numberSMSCost)
+  
+  [listing numbers for a country with costs](#listNumbersWithCost)
 
   [buying phone numbers for subaccounts](#phonenums)
 
@@ -97,6 +99,20 @@ a simple ruby gem that wraps around the twilio API allowing you to build an SMS 
   cost = Sasswillio.get_sms_pricing_for(@client, 'GB')
   p cost
   {:inbound_sms_price_for_local_number=>"0.0075", :average_outbound_sms_price_for_local_number=>0.04000000000000002, :currency=>"USD"}
+  ```
+
+<a name="listNumbersWithCost"/>
+
+## listing phone numbers for a country with costs
+
+  Specify country and it will list the inbound/outbound SMS costs along with the monthly cost. Note that costs are only calculated for local numbers and mobile numbers
+
+  ```ruby
+  numbers_with_pricing = Sasswillio.list_sms_enabled_phone_numbers_for_country_with_pricing(@client, {country_code: 'CA'})
+  p numbers_with_pricing.keys
+  [:local_numbers, :mobile_numbers]
+  p numbers_with_pricing[:local_numbers][0]
+  {:number=>"+12048171185", :friendly_name=>"(204) 817-1185", :capabilities=>{:voice=>true, :SMS=>true, :MMS=>true, :fax=>true}, :sms_pricing=>{:inbound_cost=>{"number_type"=>"local", "base_price"=>"0.0075", "current_price"=>"0.0075"}, :average_outbound_cost=>0.007500000000000005}, :monthly_cost=>"1.00"}
   ```
 
 <a name="phonenums"/>
