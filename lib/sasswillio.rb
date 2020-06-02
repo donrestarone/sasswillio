@@ -8,6 +8,7 @@ require 'twilio-ruby'
 # subaccount = Sasswillio.create_subaccount(@client, '423')
 # sms_pricing = Sasswillio.get_sms_pricing_for(@client, 'FR')
 # country_nums = Sasswillio.list_sms_enabled_phone_numbers_for_country(@client, {country_code: 'GB'})
+# numbers_with_pricing = Sasswillio.list_sms_enabled_phone_numbers_for_country_with_pricing(@client, {country_code: 'CA'})
 
 module Sasswillio
 
@@ -119,6 +120,45 @@ module Sasswillio
     transformed[:mobile_numbers] = numbers[:mobile].map{|n| {number: n.phone_number, friendly_name: n.friendly_name, capabilities: {**n.capabilities.transform_keys(&:to_sym)}}}
     return transformed
   end
+
+  def self.list_sms_enabled_phone_numbers_for_country_with_pricing(twilio_client, options = {country_code: 'CA'})
+    numbers_with_pricing = Hash.new
+    begin
+      available_nums = Sasswillio.list_sms_enabled_phone_numbers_for_country(twilio_client, options)
+      sms_pricing = Sasswillio.get_sms_pricing_for(twilio_client, options[:country_code])
+      phone_number_monthly_costs = Sasswillio.get_phone_number_pricing_for(twilio_client, options[:country_code])
+      available_nums.keys.each do |k|
+        numbers_with_pricing[k] = available_nums[k].map do |n|
+          if k == :local_numbers
+            {
+              **n,
+              sms_pricing: { 
+                inbound_cost: sms_pricing[:complete_pricing_for_country][:local_inbound],
+                average_outbound_cost: sms_pricing[:complete_pricing_for_country][:local_outbound_average]
+              },
+              monthly_cost: phone_number_monthly_costs.phone_number_prices.find{|c| c["number_type"] == 'local'} ? phone_number_monthly_costs.phone_number_prices.find{|c| c["number_type"] == 'local'}["current_price"] : nil
+            }
+          elsif k == :mobile_numbers
+            {
+              **n,
+              sms_pricing: { 
+                inbound_cost: sms_pricing[:complete_pricing_for_country][:mobile_inbound],
+                average_outbound_cost: sms_pricing[:complete_pricing_for_country][:mobile_outbound_average]
+              },
+              monthly_cost: phone_number_monthly_costs.phone_number_prices.find{|c| c["number_type"] == 'mobile'} ? phone_number_monthly_costs.phone_number_prices.find{|c| c["number_type"] == 'mobile'}["current_price"] : nil
+            }
+          end
+        end
+      end
+      return numbers_with_pricing
+    rescue Twilio::REST::TwilioError => e
+      return {
+        error: true,
+        errors: [e.message],
+        context: 'list sms enabled phone numbers for country with pricing'
+      }
+    end
+end
 
   def self.create_subaccount(twilio_client, options)
     begin
