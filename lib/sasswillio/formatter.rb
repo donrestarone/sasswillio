@@ -6,8 +6,14 @@ module Formatter
       transformed_key_for_inbound = type + '_inbound'
       transformed_key_for_outbound = type + '_outbound_average'
       pricing_hash[transformed_key_for_inbound.to_sym] = twilio_sms_pricing_res.inbound_sms_prices.find{|n| n["number_type"] == type}
-      pricing_hash[transformed_key_for_outbound.to_sym] = twilio_sms_pricing_res.outbound_sms_prices.map{|n| n["prices"].find{|i| i["number_type"] == type}}.compact.map{|n| n["current_price"].to_f}.inject{|sum, el| sum+el} / twilio_sms_pricing_res.outbound_sms_prices.size
+      numerator = twilio_sms_pricing_res.outbound_sms_prices.map{|n| n["prices"].find{|i| i["number_type"] == type}}.compact.map{|n| n["current_price"].to_f}.inject{|sum, el| sum+el}
+      if numerator && numerator > 0
+        pricing_hash[transformed_key_for_outbound.to_sym] = numerator / twilio_sms_pricing_res.outbound_sms_prices.size
+      else 
+        pricing_hash[transformed_key_for_outbound.to_sym] = nil
+      end
     end
+    
     local_price_inbound = twilio_sms_pricing_res.inbound_sms_prices.find{|n| n["number_type"] == 'local'}
     local_price_outbound = twilio_sms_pricing_res.outbound_sms_prices.map{|n| n["prices"].find{|i| i["number_type"] == 'local'}}.compact
     return {
