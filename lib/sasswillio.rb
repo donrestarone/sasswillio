@@ -243,6 +243,23 @@ end
     end
   end
 
+  def self.get_subaccount_sms_usage(subaccount_sid, subaccount_token, options)
+    begin
+      sub_account_client = Twilio::REST::Client.new subaccount_sid, subaccount_token
+      return sub_account_client.usage.records.list(
+        category: 'sms',
+        start_date: options[:start_date],
+        end_date: options[:end_date]
+      )
+    rescue Twilio::REST::TwilioError => e
+      return {
+        error: true,
+        errors: [e.message],
+        context: 'subaccount usage query'
+      }
+    end
+  end
+
   def self.send_text_message(twilio_client, body, to_number, from_number = "+15005550006")
     begin
       return twilio_client.messages.create(
